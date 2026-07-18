@@ -6,8 +6,8 @@ import urllib.request
 
 def download_content(url):
     response = urllib.request.urlopen(url)
-    if response.status_code != 200:
-        raise Exception('error in request %s\n\treturn code: %d' % (url, response.status_code) )
+    if response.status != 200:
+        raise Exception('error in request %s\n\treturn code: %d' % (url, response.status) )
     return response.read().decode('utf-8')
 
 # ruleType for raw or base64
