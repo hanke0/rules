@@ -3,7 +3,6 @@ import re
 import base64
 import urllib.request
 
-
 def download_content(url):
     response = urllib.request.urlopen(url)
     if response.status != 200:
@@ -58,7 +57,7 @@ def filtrate_rules(rules, excludes=[]):
             split_ret = rule.split('/')
             rule = split_ret[0]
 
-        if not re.match('^[\w.-]+$', rule):
+        if not re.match(r'^[\w.-]+$', rule):
             unhandle_rules.append(rule0)
             continue
 
@@ -67,14 +66,14 @@ def filtrate_rules(rules, excludes=[]):
 
         ret.append(rule)
 
-    ret = list( set(ret) )
+    ret = list(set(ret))
     ret.sort()
 
     return ret, unhandle_rules
 
-def getURLs(url):
-    r = requests.get(url)
-    return r.text.split("\n")[:-1]
+def read_file(filename):
+    with open(filename, "r", encoding="utf-8") as f:
+        return f.read()
 
 def get_manual_rules(filename):
     with open(filename, 'r', encoding='utf-8') as f:
@@ -84,20 +83,44 @@ def get_manual_rules(filename):
                 continue
             yield line
 
-def main():
+def split_uncomment_lines(content = ''):
+    for line in content.splitlines():
+        line = line.strip()
+        if line.startswith("#") or line == "":
+            continue
+        yield line
+
+def proxy_rules():
     rule = get_rule(rules_url='https://raw.githubusercontent.com/gfwlist/gfwlist/master/gfwlist.txt', ruleType='base64')
     rule += "\n".join(get_manual_rules("include.txt"))
     rules = clear_format(rule)
     excludes = list(get_manual_rules("excludes.txt"))
-
     rules, unhandle_rules = filtrate_rules(rules, excludes)
+    print("unhandled rules:\n--------")
+    print("\n".join(unhandle_rules))
+    print("--------\n")
     rules = list(set(rules))
+    lines = []
+    for rule in rules:
+        lines.append(f"DOMAIN-SUFFIX,{rule},PROXY")
+    return "\n".join(lines)
 
-    with open("gfw.txt", "w", encoding="utf-8") as f:
-        f.write("\n".join(rules))
+def direct_rules():
+    rule = get_rule('https://raw.githubusercontent.com/mawenjian/china-cdn-domain-whitelist/refs/heads/master/china-top-website-whitelist.txt')
+    lines = []
+    for line in split_uncomment_lines(rule):
+        lines.append(f"DOMAIN-SUFFIX,{line.strip('.')},DIRECT")
+    return "\n".join(lines)
 
-    with open("gfw_unhandle.txt", "w", encoding="utf-8") as f:
-        f.write("\n".join(unhandle_rules))
+def main():
+    proxy = proxy_rules()
+    direct = direct_rules()
+    fmt = read_file("base.txt")
+    with open("shadowrocket.conf", "w", encoding="utf-8") as f:
+        f.write(f"# update at {time.strftime('%Y-%m-%d %H:%M:%S')}\n\n")
+        content = fmt.format(direct=direct, proxy=proxy)
+        f.write(content)
 
-if __name__ == "__main__":
-    main()
+    print("Done!")
+
+main()

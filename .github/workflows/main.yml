@@ -17,7 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Run auto-build.sh
-        run: python3 run.py
+        run: python3 main.py
       - name: Commit & Push changes
         uses: actions-js/push@master
         with:
