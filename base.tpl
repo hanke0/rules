@@ -6,13 +6,15 @@ bypass-tun = 10.0.0.0/8,100.64.0.0/10,127.0.0.0/8,169.254.0.0/16,172.16.0.0/12,1
 dns-server = https://dns.alidns.com/dns-query, https://doh.pub/dns-query
 
 [Rule]
-# Direct
-#include cn.list
 
 # Proxy
 #include gfw.list
 #include hk-broker.list
 #include telegram.list
+#include linkedin.list
+
+# Direct
+#include cn.list
 
 GEOIP,CN,DIRECT
 FINAL,proxy
