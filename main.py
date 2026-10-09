@@ -1,16 +1,23 @@
+#!/usr/bin/env python3
 import time
 import re
 import base64
 import urllib.request
 
-def download_content(url):
-    response = urllib.request.urlopen(url)
+# Define your custom HTTP headers
+headers = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+}
+
+def download_content(url: str) -> str:
+    request = urllib.request.Request(url, headers=headers)
+    response = urllib.request.urlopen(request)
     if response.status != 200:
         raise Exception('error in request %s\n\treturn code: %d' % (url, response.status) )
     return response.read().decode('utf-8')
 
 # ruleType for raw or base64
-def get_rule(rules_url, ruleType='raw'):
+def get_web_rule(rules_url: str, ruleType: str ='raw') -> str:
     content = download_content(rules_url)
     if ruleType == 'base64':
         rule = base64.b64decode(content) \
@@ -21,7 +28,7 @@ def get_rule(rules_url, ruleType='raw'):
     return rule
 
 
-def clear_format(rule):
+def clear_format(rule: str) -> list[str]:
     rules = []
 
     rule = rule.split('\n')
@@ -45,9 +52,9 @@ def clear_format(rule):
     return rules
 
 
-def filtrate_rules(rules, excludes=[]):
+def filtrate_rules(rules: list[str]) -> tuple[list[str], list[str]]:
     ret = []
-    unhandle_rules = []
+    unhandled_rules = []
 
     for rule in rules:
         rule0 = rule
@@ -58,10 +65,7 @@ def filtrate_rules(rules, excludes=[]):
             rule = split_ret[0]
 
         if not re.match(r'^[\w.-]+$', rule):
-            unhandle_rules.append(rule0)
-            continue
-
-        if rule in excludes:
+            unhandled_rules.append(rule0)
             continue
 
         ret.append(rule)
@@ -69,13 +73,35 @@ def filtrate_rules(rules, excludes=[]):
     ret = list(set(ret))
     ret.sort()
 
-    return ret, unhandle_rules
+    return ret, unhandled_rules
 
-def read_file(filename):
+
+def handle_auto_proxy(rule: str, proxyType: str) -> str:
+    rules = clear_format(rule)
+    rules, unhandled_rules = filtrate_rules(rules)
+    print("unhandled rules:\n--------")
+    print("\n".join(unhandled_rules))
+    print("--------\n")
+    rules = list(set(rules))
+    lines = []
+    for rule in rules:
+        lines.append(f"DOMAIN-SUFFIX,{rule},{proxyType}")
+    lines.sort()
+    return "\n".join(lines)
+
+def handle_rule_set(rule: str, proxyType: str) -> str:
+    rules = set()
+    for line in split_uncomment_lines(rule):
+        rules.add(f"DOMAIN-SUFFIX,{line.strip('.')},{proxyType}")
+    rules = list(rules)
+    rules.sort()
+    return "\n".join(rules)
+
+def read_file(filename: str) -> str:
     with open(filename, "r", encoding="utf-8") as f:
         return f.read()
 
-def get_manual_rules(filename):
+def get_manual_rules(filename: str) -> iter[str]:
     with open(filename, 'r', encoding='utf-8') as f:
         for line in f.readlines():
             line = line.strip()
@@ -83,44 +109,85 @@ def get_manual_rules(filename):
                 continue
             yield line
 
-def split_uncomment_lines(content = ''):
+def split_uncomment_lines(content: str = '') -> iter[str]:
     for line in content.splitlines():
         line = line.strip()
         if line.startswith("#") or line == "":
             continue
         yield line
 
-def proxy_rules():
-    rule = get_rule(rules_url='https://raw.githubusercontent.com/gfwlist/gfwlist/master/gfwlist.txt', ruleType='base64')
-    rule += "\n".join(get_manual_rules("include.txt"))
-    rules = clear_format(rule)
-    excludes = list(get_manual_rules("excludes.txt"))
-    rules, unhandle_rules = filtrate_rules(rules, excludes)
-    print("unhandled rules:\n--------")
-    print("\n".join(unhandle_rules))
-    print("--------\n")
-    rules = list(set(rules))
-    lines = []
-    for rule in rules:
-        lines.append(f"DOMAIN-SUFFIX,{rule},PROXY")
-    return "\n".join(lines)
+def handle_include(content: str) -> str:
+    return "\n".join(_handle_include(content))
 
-def direct_rules():
-    rule = get_rule('https://raw.githubusercontent.com/mawenjian/china-cdn-domain-whitelist/refs/heads/master/china-top-website-whitelist.txt')
-    lines = []
-    for line in split_uncomment_lines(rule):
-        lines.append(f"DOMAIN-SUFFIX,{line.strip('.')},DIRECT")
-    return "\n".join(lines)
+include_pattern = re.compile(r'^#include (.+)$')
+
+def _handle_include(content: str) -> iter[str]:
+    for line in content.splitlines():
+        ma = include_pattern.match(line)
+        if not ma:
+            yield line
+            continue
+        filename = ma.group(1)
+        yield read_file(filename)
+        yield "\n"
+
+def update_rule_file(filename: str):
+    lines = read_file(filename).splitlines()
+    if len(lines) < 2:
+        return
+    parts = lines[0].lstrip("#").split()
+    if len(parts) < 3:
+        return
+    if parts[0] != 'web':
+        return
+    fmt = parts[1]
+    proxyType = parts[2]
+    ruleFmt = "raw"
+    if len(parts) >= 4:
+        ruleFmt = parts[3]
+    url = lines[1].lstrip('#')
+
+    if proxyType != "proxy" and proxyType != "direct":
+        raise ValueError(f"invalid proxy type: {proxyType}")
+
+    proxyType = proxyType.upper()
+    content = get_web_rule(url, ruleFmt)
+    if fmt == "AutoProxy":
+        content = handle_auto_proxy(content, proxyType)
+    elif fmt == "rule-set":
+        content = handle_rule_set(content, proxyType)
+    else:
+        raise ValueError(f"unknown format: {fmt}")
+
+    with open(filename, 'w', encoding="utf-8") as f:
+        f.write(lines[0])
+        f.write("\n")
+        f.write(lines[1])
+        f.write("\n\n")
+        f.write(content)
+        f.write("\n")
+
+def update_all_rule_files() -> None:
+    files = (
+        "cn.list",
+        "gfw.list",
+        "hk-broker.list",
+        "telegram.list",
+    )
+    for file in files:
+        print(f"update rule start: {file}")
+        update_rule_file(file)
+        print(f"update rule finish: {file}")
 
 def main():
-    proxy = proxy_rules()
-    direct = direct_rules()
-    fmt = read_file("base.txt")
+    update_all_rule_files()
+    fmt = read_file("base.tpl")
+    content = handle_include(fmt)
     with open("shadowrocket.conf", "w", encoding="utf-8") as f:
         f.write(f"# update at {time.strftime('%Y-%m-%d %H:%M:%S')}\n\n")
-        content = fmt.format(direct=direct, proxy=proxy)
         f.write(content)
 
     print("Done!")
 
-main()
+if __name__ == '__main__':
+    main()
