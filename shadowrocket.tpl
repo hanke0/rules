@@ -1,4 +1,4 @@
-# update at {update_at}
+# Last Modified: {update_at}
 
 [General]
 ipv6 = false

@@ -1,4 +1,4 @@
-# update at {update_at}
+# Last Modified: {update_at}
 
 # Usage: add bellow content in your clash.yaml
 #rule-providers:

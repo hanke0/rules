@@ -18,6 +18,7 @@ RULE_FILES = (
 
 PROXY_TYPES = ("proxy", "direct")
 RULE_TYPES = ("DOMAIN-SUFFIX", "DOMAIN", "DOMAIN-KEYWORD", "IP-CIDR", "IP-ASN")
+AUTO_PROXY_TYPES = ("DOMAIN-SUFFIX", "DOMAIN", "DOMAIN-KEYWORD")
 AUTO_PROXY_SKIP_PREFIXES = ("!", "@@", "[AutoProxy")
 URL_SCHEME_PATTERN = re.compile(r"^\|?https?://")
 DOMAIN_ANCHOR_PATTERN = re.compile(r"^\|\|")
@@ -294,10 +295,45 @@ def update_clash_config():
     write_file("clash_proxy.yaml", tpl.format(rules="\n".join(proxy_rules), update_at=timestamp))
 
 
+def convert_to_auto_proxy_rule(rule: str) -> str:
+    rules = []
+    unhandled_rules = []
+    for line in rule.splitlines():
+        line = line.strip()
+        if line == "" or line.startswith("#"):
+            continue
+        parts = line.split(",")
+        if len(parts) < 3:
+            unhandled_rules.append(line)
+            continue
+        rule_type, domain, proxy_type, *_ = parts
+        if rule_type not in AUTO_PROXY_TYPES:
+            continue
+        if proxy_type == "DIRECT":
+            rules.append(f"@@||{domain}")
+        elif proxy_type == "PROXY":
+            rules.append(f"||{domain}")
+        else:
+            unhandled_rules.append(line)
+            continue
+    print_unhandled_lines(unhandled_rules)
+    return "\n".join(rules)
+
+
+def update_auto_proxy_config():
+    tpl = read_file("auto_proxy.tpl")
+    rules: list[str] = []
+    for file in RULE_FILES:
+        rules.append(convert_to_auto_proxy_rule(read_file(file)))
+    timestamp = get_update_at()
+    write_file("auto_proxy.txt", tpl.format(rules="\n".join(rules), update_at=timestamp))
+
+
 def main() -> None:
     update_all_rule_files()
     update_shadowrocket_config()
     update_clash_config()
+    update_auto_proxy_config()
     print("Done!")
 
 
