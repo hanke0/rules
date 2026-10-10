@@ -1,4 +1,4 @@
-# Last Modified: 2026-10-10 15:02:48
+# Last Modified: 2026-10-10 15:28:27
 
 # Usage: add bellow content in your clash.yaml
 #rule-providers:
@@ -4909,3 +4909,11 @@ payload:
   - DOMAIN-SUFFIX,wheelpop.com
   - DOMAIN-SUFFIX,wwtbam.com
   - DOMAIN-SUFFIX,yourfantasybeginsnow.com
+  - DOMAIN-SUFFIX,bilibili.tv
+  - DOMAIN,bahamut.akamaized.net
+  - DOMAIN-SUFFIX,bahamut.com.tw
+  - DOMAIN-SUFFIX,digicert.com
+  - DOMAIN-SUFFIX,gamer.com.tw
+  - DOMAIN-SUFFIX,gvt1.com
+  - DOMAIN-SUFFIX,hinet.net
+  - DOMAIN-SUFFIX,viblast.com

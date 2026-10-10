@@ -5007,6 +5007,28 @@ DOMAIN-SUFFIX,sovec.net,PROXY
 DOMAIN-SUFFIX,wheelpop.com,PROXY
 DOMAIN-SUFFIX,wwtbam.com,PROXY
 DOMAIN-SUFFIX,yourfantasybeginsnow.com,PROXY
+# NAME: BiliBiliIntl
+# AUTHOR: blackmatrix7
+# REPO: https://github.com/blackmatrix7/ios_rule_script
+# UPDATED: 2025-06-06 09:17:52
+# DOMAIN-SUFFIX: 1
+# TOTAL: 1
+DOMAIN-SUFFIX,bilibili.tv,PROXY
+# NAME: Bahamut
+# AUTHOR: blackmatrix7
+# REPO: https://github.com/blackmatrix7/ios_rule_script
+# UPDATED: 2025-06-06 09:16:56
+# DOMAIN: 1
+# DOMAIN-SUFFIX: 6
+# USER-AGENT: 1
+# TOTAL: 8
+DOMAIN,bahamut.akamaized.net,PROXY
+DOMAIN-SUFFIX,bahamut.com.tw,PROXY
+DOMAIN-SUFFIX,digicert.com,PROXY
+DOMAIN-SUFFIX,gamer.com.tw,PROXY
+DOMAIN-SUFFIX,gvt1.com,PROXY
+DOMAIN-SUFFIX,hinet.net,PROXY
+DOMAIN-SUFFIX,viblast.com,PROXY
 # NAME: China
 # AUTHOR: blackmatrix7
 # REPO: https://github.com/blackmatrix7/ios_rule_script
