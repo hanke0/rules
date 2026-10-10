@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # update at 2026-10-10 12:08:12
+=======
+# update at 2026-10-10 12:18:04
+>>>>>>> 3e07639 (include private ip)
 
 # Usage: add bellow content in your clash.yaml
 #rule-providers:
@@ -22,7 +26,23 @@
 #  - RULE-SET,proxy,PROXY
 
 payload:
-
+  - IP-CIDR,0.0.0.0/8
+  - IP-CIDR,10.0.0.0/8
+  - IP-CIDR,100.64.0.0/10
+  - IP-CIDR,127.0.0.0/8
+  - IP-CIDR,169.254.0.0/16
+  - IP-CIDR,172.16.0.0/12
+  - IP-CIDR,192.0.0.0/24
+  - IP-CIDR,192.0.2.0/24
+  - IP-CIDR,192.88.99.0/24
+  - IP-CIDR,192.168.0.0/16
+  - IP-CIDR,198.18.0.0/15
+  - IP-CIDR,198.51.100.0/24
+  - IP-CIDR,203.0.113.0/24
+  - IP-CIDR,224.0.0.0/3
+  - IP-CIDR,::/127fc00::/7
+  - IP-CIDR,fe80::/10
+  - IP-CIDR,ff00::/8
   - DOMAIN-SUFFIX,00cdn.com
   - DOMAIN-SUFFIX,0123456789.com
   - DOMAIN-SUFFIX,0379home.com
