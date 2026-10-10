@@ -12,6 +12,7 @@ dns-server = https://dns.alidns.com/dns-query, https://doh.pub/dns-query
 #include hk-broker.list
 #include telegram.list
 #include linkedin.list
+#include ai.list
 
 # Direct
 #include cn.list

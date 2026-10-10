@@ -10,11 +10,12 @@ HEADERS = {
 REQUEST_TIMEOUT = 30
 
 RULE_FILES = (
+    "ai.list",
     "cn.list",
     "gfw.list",
     "hk-broker.list",
-    "telegram.list",
     "linkedin.list",
+    "telegram.list",
 )
 TEMPLATE_FILE = "base.tpl"
 OUTPUT_FILE = "shadowrocket.conf"
@@ -75,12 +76,16 @@ def filtrate_rules(rules: list[str]) -> tuple[set[str], list[str]]:
             unhandled.append(rule)
     return hostnames, unhandled
 
+def print_unhandled_lines(lines: list[str]) -> None:
+    if not lines:
+        return
+    print("unhandled rules:\n--------")
+    print("\n".join(lines))
+    print("--------\n")
 
 def handle_auto_proxy(content: str, proxy_type: str, excludes: set[str]) -> str:
     hostnames, unhandled = filtrate_rules(clear_format(content))
-    print("unhandled rules:\n--------")
-    print("\n".join(unhandled))
-    print("--------\n")
+    print_unhandled_lines(unhandled)
     lines = [format_rule(h, proxy_type) for h in hostnames if h not in excludes]
     return "\n".join(sorted(lines))
 
@@ -89,6 +94,8 @@ def handle_domains(content: str, proxy_type: str, excludes: set[str]) -> str:
     seen = set()
     lines = []
     for domain in content.splitlines():
+        if domain.strip() == "":
+            continue
         if domain.startswith("#"):
             lines.append(domain)
             continue
@@ -103,18 +110,27 @@ def handle_domains(content: str, proxy_type: str, excludes: set[str]) -> str:
 
 def handle_surge(content: str, proxy_type: str, excludes: set[str]) -> str:
     lines = []
+    unhandled = []
     for line in content.splitlines():
+        if line.strip() == "":
+            continue
         if line.startswith("#"):
             lines.append(line)
             continue
+        if line.startswith("ip-cidr:"):
+            line = "IP-CIDR," + line.removeprefix("ip-cidr:")
+        if line.startswith("IP-CIDR:"):
+            line = "IP-CIDR," + line.removeprefix("IP-CIDR:")
         parts = line.split(",")
         if len(parts) < 2:
+            unhandled.append(line)
             continue
         rule_type, domain, *options = parts
         if domain in excludes:
             continue
         suffix = f",{options[0]}" if options else ""
         lines.append(f"{rule_type},{domain},{proxy_type}{suffix}")
+    print_unhandled_lines(unhandled)
     return "\n".join(lines)
 
 
