@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-# update at 2026-10-10 14:18:32
-=======
-# Last Modified: 2026-10-10 14:44:04
->>>>>>> cdf06ce (support auto proxy config output)
+# Last Modified: 2026-10-10 14:45:15
 
 # Usage: add bellow content in your clash.yaml
 #rule-providers:
