@@ -11,7 +11,7 @@ dns-server = https://dns.alidns.com/dns-query, https://doh.pub/dns-query
 {rules}
 
 GEOIP,CN,DIRECT
-FINAL,proxy
+FINAL,PROXY
 
 [URL Rewrite]
 ^https?://(www.)?(g|google)\.cn https://www.google.com 302

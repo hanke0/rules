@@ -11,12 +11,8 @@ HEADERS = {
 REQUEST_TIMEOUT = 30
 
 RULE_FILES = (
-    "ai.list",
+    "custom.list",
     "gfw.list",
-    "hk-broker.list",
-    "linkedin.list",
-    "telegram.list",
-    "cn.list",
 )
 
 PROXY_TYPES = ("proxy", "direct")
@@ -26,6 +22,7 @@ URL_SCHEME_PATTERN = re.compile(r"^\|?https?://")
 DOMAIN_ANCHOR_PATTERN = re.compile(r"^\|\|")
 IP_CIDR_COLON_PATTERN = re.compile(r"^ip-cidr:", re.IGNORECASE)
 HOSTNAME_PATTERN = re.compile(r"^[\w.-]+$")
+COMMENT_PREFIX_PATTERN = re.compile(r"^#[ ]*")
 
 
 def read_file(filename: str) -> str:
@@ -153,10 +150,16 @@ class RuleSource:
     #ignore <domain>[,<domain>...]   (optional, repeatable)
     """
 
+    name: str
     fmt: str
     proxy_type: str
     encoding: str
     url: str
+
+
+@dataclass
+class RuleSources:
+    sources: list[RuleSource]
     header: list[str]
     excludes: set[str] = field(default_factory=set)
 
@@ -164,41 +167,66 @@ class RuleSource:
 def parse_rule_source(lines: list[str]) -> RuleSource | None:
     if len(lines) < 2:
         return None
-    parts = lines[0].lstrip("#").split()
-    if len(parts) < 3 or parts[0] != "web":
+    parts = COMMENT_PREFIX_PATTERN.sub("", lines[0]).split()
+    if len(parts) < 4 or parts[0] != "web":
         return None
-    fmt, proxy_type = parts[1], parts[2]
+    name, fmt, proxy_type = parts[1], parts[2], parts[3]
     if proxy_type not in PROXY_TYPES:
         raise ValueError(f"invalid proxy type: {proxy_type}")
     if fmt not in FORMAT_HANDLERS:
         raise ValueError(f"unknown format: {fmt}")
 
     source = RuleSource(
+        name=name,
         fmt=fmt,
         proxy_type=proxy_type,
-        encoding=parts[3] if len(parts) >= 4 else "raw",
-        url=lines[1].lstrip("#"),
-        header=lines[:2],
+        encoding=parts[4] if len(parts) >= 5 else "raw",
+        url=COMMENT_PREFIX_PATTERN.sub("", lines[1]),
     )
-    for line in lines[2:]:
-        if not line.startswith("#ignore"):
-            break
-        source.header.append(line)
-        source.excludes.update(d.strip() for d in line.removeprefix("#ignore").split(","))
     return source
 
 
-def update_rule_file(filename: str) -> None:
-    source = parse_rule_source(read_file(filename).splitlines())
-    if source is None:
-        return
-    handler = FORMAT_HANDLERS[source.fmt]
-    content = handler(
-        get_web_rule(source.url, source.encoding),
-        source.proxy_type.upper(),
-        source.excludes,
+def parse_rule_sources(lines: list[str]) -> RuleSources | None:
+    sources = RuleSources(
+        sources=[],
+        header=[],
+        excludes=set(),
     )
-    write_file(filename, "\n".join(source.header) + "\n\n" + content + "\n")
+    temp = lines
+    while True:
+        source = parse_rule_source(temp)
+        if source is None:
+            break
+        sources.sources.append(source)
+        sources.header.extend(temp[:2])
+        temp = temp[2:]
+    for line in temp:
+        line = COMMENT_PREFIX_PATTERN.sub(line, "")
+        if not line.startswith("ignore "):
+            break
+        sources.header.append(line)
+        sources.excludes.update(d.strip() for d in line.removeprefix("ignore ").split(","))
+    return sources
+
+
+def update_rule_file(filename: str) -> None:
+    sources = parse_rule_sources(read_file(filename).splitlines())
+    if sources is None or not sources.sources:
+        return
+    contents = sources.header[:]
+    contents.append("\n")
+    for source in sources.sources:
+        handler = FORMAT_HANDLERS[source.fmt]
+        print(f"handle rule-set start: {source.name}")
+        content = handler(
+            get_web_rule(source.url, source.encoding),
+            source.proxy_type.upper(),
+            sources.excludes,
+        )
+        contents.append(content)
+        print(f"handle rule-set finish: {source.name}")
+    contents.append("\n")
+    write_file(filename, "\n".join(contents))
 
 
 def update_all_rule_files() -> None:
@@ -214,7 +242,7 @@ def update_shadowrocket_config():
     for file in RULE_FILES:
         rules.append(read_file(file))
     timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
-    content = tpl.format(rules="\n".join(rules).lstrip(), update_at=timestamp)
+    content = tpl.format(rules="\n".join(rules), update_at=timestamp)
     write_file("shadowrocket.conf", content)
 
 
@@ -254,8 +282,12 @@ def update_clash_config():
         direct_rules.append(direct)
 
     timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
-    write_file("clash_direct.yaml", tpl.format(rules="\n".join(direct_rules).lstrip(), update_at=timestamp))
-    write_file("clash_proxy.yaml", tpl.format(rules="\n".join(proxy_rules).lstrip(), update_at=timestamp))
+    write_file(
+        "clash_direct.yaml", tpl.format(rules="\n".join(direct_rules), update_at=timestamp)
+    )
+    write_file(
+        "clash_proxy.yaml", tpl.format(rules="\n".join(proxy_rules), update_at=timestamp)
+    )
 
 
 def main() -> None:

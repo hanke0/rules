@@ -1,4 +1,4 @@
-# update at 2026-10-10 03:08:42
+# update at 2026-10-10 04:02:24
 
 # Usage: add bellow content in your clash.yaml
 #rule-providers:
@@ -22,7 +22,8 @@
 #  - RULE-SET,proxy,PROXY
 
 payload:
-- DOMAIN-SUFFIX,00cdn.com
+
+  - DOMAIN-SUFFIX,00cdn.com
   - DOMAIN-SUFFIX,0123456789.com
   - DOMAIN-SUFFIX,0379home.com
   - DOMAIN-SUFFIX,055110.com
