@@ -105,7 +105,7 @@ def handle_domains(content: str, proxy_type: str, excludes: set[str]) -> str:
             continue
         seen.add(domain)
         lines.append(format_rule(domain, proxy_type))
-    return "\n".join(sorted(lines))
+    return "\n".join(lines)
 
 
 def handle_surge(content: str, proxy_type: str, excludes: set[str]) -> str:
