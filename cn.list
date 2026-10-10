@@ -2,16 +2,16 @@
 #https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/rule/Shadowrocket/China/China_Domain.list
 #ignore wikipedia.org
 
+# NAME: China
 # AUTHOR: blackmatrix7
+# REPO: https://github.com/blackmatrix7/ios_rule_script
+# UPDATED: 2026-06-22 02:36:19
+# DOMAIN: 17
 # DOMAIN-KEYWORD: 9
 # DOMAIN-SUFFIX: 3674
-# DOMAIN: 17
 # IP-CIDR: 21
-# NAME: China
-# REPO: https://github.com/blackmatrix7/ios_rule_script
-# TOTAL: 3752
-# UPDATED: 2026-06-22 02:36:19
 # USER-AGENT: 31
+# TOTAL: 3752
 DOMAIN-SUFFIX,00cdn.com,DIRECT
 DOMAIN-SUFFIX,0123456789.com,DIRECT
 DOMAIN-SUFFIX,0379home.com,DIRECT
@@ -417,7 +417,6 @@ DOMAIN-SUFFIX,amapauto.com,DIRECT
 DOMAIN-SUFFIX,amd.com,DIRECT
 DOMAIN-SUFFIX,amemv.com,DIRECT
 DOMAIN-SUFFIX,ams.org,DIRECT
-DOMAIN-SUFFIX,analytics.strava.com,DIRECT
 DOMAIN-SUFFIX,andfx.net,DIRECT
 DOMAIN-SUFFIX,anfensi.com,DIRECT
 DOMAIN-SUFFIX,animebytes.tv,DIRECT
@@ -584,7 +583,6 @@ DOMAIN-SUFFIX,bktencent.com,DIRECT
 DOMAIN-SUFFIX,blackdragon.com,DIRECT
 DOMAIN-SUFFIX,blogjava.net,DIRECT
 DOMAIN-SUFFIX,blyun.com,DIRECT
-DOMAIN-SUFFIX,blzddist1-a.akamaihd.net,DIRECT
 DOMAIN-SUFFIX,bmj.com,DIRECT
 DOMAIN-SUFFIX,bobbns.com,DIRECT
 DOMAIN-SUFFIX,bobo.com,DIRECT
@@ -675,7 +673,6 @@ DOMAIN-SUFFIX,cctv.com,DIRECT
 DOMAIN-SUFFIX,cctvpic.com,DIRECT
 DOMAIN-SUFFIX,cczq.com,DIRECT
 DOMAIN-SUFFIX,cczq.net,DIRECT
-DOMAIN-SUFFIX,cdn.angruo.com,DIRECT
 DOMAIN-SUFFIX,cdn20.com,DIRECT
 DOMAIN-SUFFIX,cdn30.org,DIRECT
 DOMAIN-SUFFIX,cdncl.net,DIRECT
@@ -847,7 +844,6 @@ DOMAIN-SUFFIX,clarivate.com,DIRECT
 DOMAIN-SUFFIX,clashroyaleapp.com,DIRECT
 DOMAIN-SUFFIX,classix-unlimited.co.uk,DIRECT
 DOMAIN-SUFFIX,click.qianqian.com,DIRECT
-DOMAIN-SUFFIX,client.amplifi.com,DIRECT
 DOMAIN-SUFFIX,clk1.top,DIRECT
 DOMAIN-SUFFIX,cloud-beijing.com,DIRECT
 DOMAIN-SUFFIX,cloud-hebi.com,DIRECT
@@ -1196,8 +1192,6 @@ DOMAIN-SUFFIX,douyu.tv,DIRECT
 DOMAIN-SUFFIX,douyuscdn.com,DIRECT
 DOMAIN-SUFFIX,douyutv.com,DIRECT
 DOMAIN-SUFFIX,downcc.com,DIRECT
-DOMAIN-SUFFIX,download.jetbrains.com,DIRECT
-DOMAIN-SUFFIX,download.microsoft.com,DIRECT
 DOMAIN-SUFFIX,downxia.com,DIRECT
 DOMAIN-SUFFIX,downyi.com,DIRECT
 DOMAIN-SUFFIX,dpfile.com,DIRECT
@@ -1758,7 +1752,6 @@ DOMAIN-SUFFIX,im-cc.com,DIRECT
 DOMAIN-SUFFIX,im2maker.com,DIRECT
 DOMAIN-SUFFIX,im9.com,DIRECT
 DOMAIN-SUFFIX,images-amazon.com,DIRECT
-DOMAIN-SUFFIX,images-cn.ssl-images-amazon.com,DIRECT
 DOMAIN-SUFFIX,imcapptest.com,DIRECT
 DOMAIN-SUFFIX,imedao.com,DIRECT
 DOMAIN-SUFFIX,imf.org,DIRECT
@@ -1778,7 +1771,6 @@ DOMAIN-SUFFIX,inftab.com,DIRECT
 DOMAIN-SUFFIX,intltencentcos.com,DIRECT
 DOMAIN-SUFFIX,iop.org,DIRECT
 DOMAIN-SUFFIX,ip-cdn.com,DIRECT
-DOMAIN-SUFFIX,ip.istatmenus.app,DIRECT
 DOMAIN-SUFFIX,ip.la,DIRECT
 DOMAIN-SUFFIX,ip138.com,DIRECT
 DOMAIN-SUFFIX,ipanda.com,DIRECT
@@ -2018,7 +2010,6 @@ DOMAIN-SUFFIX,kaola.com,DIRECT
 DOMAIN-SUFFIX,kaopu001.com,DIRECT
 DOMAIN-SUFFIX,karger.com,DIRECT
 DOMAIN-SUFFIX,kaspersky-labs.com,DIRECT
-DOMAIN-SUFFIX,kc.kexinshe.com,DIRECT
 DOMAIN-SUFFIX,kcbebank.com,DIRECT
 DOMAIN-SUFFIX,keboyunxiao.com,DIRECT
 DOMAIN-SUFFIX,kechuang.org,DIRECT
@@ -2448,7 +2439,6 @@ DOMAIN-SUFFIX,nowscore.com,DIRECT
 DOMAIN-SUFFIX,npmmirror.com,DIRECT
 DOMAIN-SUFFIX,nruan.com,DIRECT
 DOMAIN-SUFFIX,ntalker.com,DIRECT
-DOMAIN-SUFFIX,ntservicepack.microsoft.com,DIRECT
 DOMAIN-SUFFIX,nuomi.com,DIRECT
 DOMAIN-SUFFIX,nvsheng.com,DIRECT
 DOMAIN-SUFFIX,nx-sc.com,DIRECT
@@ -2501,8 +2491,6 @@ DOMAIN-SUFFIX,oracle-tencent.net,DIRECT
 DOMAIN-SUFFIX,oracle.com,DIRECT
 DOMAIN-SUFFIX,oray.com,DIRECT
 DOMAIN-SUFFIX,orient-fund.com,DIRECT
-DOMAIN-SUFFIX,origin-a.akamaihd.ne,DIRECT
-DOMAIN-SUFFIX,origin-a.akamaihd.net,DIRECT
 DOMAIN-SUFFIX,osapublishing.org,DIRECT
 DOMAIN-SUFFIX,oschina.net,DIRECT
 DOMAIN-SUFFIX,ottcn.com,DIRECT
@@ -2836,7 +2824,6 @@ DOMAIN-SUFFIX,skysea.com,DIRECT
 DOMAIN-SUFFIX,slk1.net,DIRECT
 DOMAIN-SUFFIX,sllssrq.com,DIRECT
 DOMAIN-SUFFIX,smartisan.com,DIRECT
-DOMAIN-SUFFIX,sms.imagetasks.com,DIRECT
 DOMAIN-SUFFIX,smtcdns.com,DIRECT
 DOMAIN-SUFFIX,smtcdns.net,DIRECT
 DOMAIN-SUFFIX,smzdm.com,DIRECT
@@ -2898,7 +2885,6 @@ DOMAIN-SUFFIX,startssl.com,DIRECT
 DOMAIN-SUFFIX,staticdn.net,DIRECT
 DOMAIN-SUFFIX,staticfile.org,DIRECT
 DOMAIN-SUFFIX,stcn.com,DIRECT
-DOMAIN-SUFFIX,steamcommunity-a.akamaihd.net,DIRECT
 DOMAIN-SUFFIX,steampp.net,DIRECT
 DOMAIN-SUFFIX,stockstar.com,DIRECT
 DOMAIN-SUFFIX,suanya.com,DIRECT
@@ -3301,7 +3287,6 @@ DOMAIN-SUFFIX,weilaicaijing.com,DIRECT
 DOMAIN-SUFFIX,weilaiyunxiao.com,DIRECT
 DOMAIN-SUFFIX,weiphone.com,DIRECT
 DOMAIN-SUFFIX,weiphone.net,DIRECT
-DOMAIN-SUFFIX,weixin.com,DIRECT
 DOMAIN-SUFFIX,weixinbridge.com,DIRECT
 DOMAIN-SUFFIX,weiyangx.com,DIRECT
 DOMAIN-SUFFIX,weiyun.com,DIRECT
@@ -3372,8 +3357,6 @@ DOMAIN-SUFFIX,wuliujie.com,DIRECT
 DOMAIN-SUFFIX,wumii.com,DIRECT
 DOMAIN-SUFFIX,wuming.com,DIRECT
 DOMAIN-SUFFIX,wuximediaglobal.com,DIRECT
-DOMAIN-SUFFIX,www.libvideo.com,DIRECT
-DOMAIN-SUFFIX,www.yxssp.com,DIRECT
 DOMAIN-SUFFIX,wxsbank.com,DIRECT
 DOMAIN-SUFFIX,wxzq.com,DIRECT
 DOMAIN-SUFFIX,wywyx.com,DIRECT
@@ -3701,3 +3684,20 @@ DOMAIN-SUFFIX,zuoyebang.com,DIRECT
 DOMAIN-SUFFIX,zybang.com,DIRECT
 DOMAIN-SUFFIX,zyh365.com,DIRECT
 DOMAIN-SUFFIX,zzdtec.com,DIRECT
+DOMAIN-SUFFIX,analytics.strava.com,DIRECT
+DOMAIN-SUFFIX,blzddist1-a.akamaihd.net,DIRECT
+DOMAIN-SUFFIX,cdn.angruo.com,DIRECT
+DOMAIN-SUFFIX,client.amplifi.com,DIRECT
+DOMAIN-SUFFIX,download.jetbrains.com,DIRECT
+DOMAIN-SUFFIX,download.microsoft.com,DIRECT
+DOMAIN-SUFFIX,images-cn.ssl-images-amazon.com,DIRECT
+DOMAIN-SUFFIX,ip.istatmenus.app,DIRECT
+DOMAIN-SUFFIX,kc.kexinshe.com,DIRECT
+DOMAIN-SUFFIX,ntservicepack.microsoft.com,DIRECT
+DOMAIN-SUFFIX,origin-a.akamaihd.ne,DIRECT
+DOMAIN-SUFFIX,origin-a.akamaihd.net,DIRECT
+DOMAIN-SUFFIX,sms.imagetasks.com,DIRECT
+DOMAIN-SUFFIX,steamcommunity-a.akamaihd.net,DIRECT
+DOMAIN-SUFFIX,weixin.com,DIRECT
+DOMAIN-SUFFIX,www.libvideo.com,DIRECT
+DOMAIN-SUFFIX,www.yxssp.com,DIRECT
