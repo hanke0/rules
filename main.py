@@ -3,6 +3,7 @@ import base64
 import re
 import time
 import urllib.request
+from dataclasses import dataclass, field
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
@@ -22,6 +23,9 @@ OUTPUT_FILE = "shadowrocket.conf"
 
 PROXY_TYPES = ("proxy", "direct")
 AUTO_PROXY_SKIP_PREFIXES = ("!", "@@", "[AutoProxy")
+URL_SCHEME_PATTERN = re.compile(r"^\|?https?://")
+DOMAIN_ANCHOR_PATTERN = re.compile(r"^\|\|")
+IP_CIDR_COLON_PATTERN = re.compile(r"^ip-cidr:", re.IGNORECASE)
 HOSTNAME_PATTERN = re.compile(r"^[\w.-]+$")
 INCLUDE_PATTERN = re.compile(r"^#include (.+)$")
 
@@ -53,19 +57,27 @@ def format_rule(domain: str, proxy_type: str) -> str:
     return f"DOMAIN-SUFFIX,{domain},{proxy_type}"
 
 
-def clear_format(content: str) -> list[str]:
+def print_unhandled_lines(lines: list[str]) -> None:
+    if not lines:
+        return
+    print("unhandled rules:\n--------")
+    print("\n".join(lines))
+    print("--------\n")
+
+
+def normalize_auto_proxy_rules(content: str) -> list[str]:
     rules = []
     for row in content.splitlines():
         row = row.strip()
         if not row or row.startswith(AUTO_PROXY_SKIP_PREFIXES):
             continue
-        row = re.sub(r"^\|?https?://", "", row)
-        row = re.sub(r"^\|\|", "", row)
+        row = URL_SCHEME_PATTERN.sub("", row)
+        row = DOMAIN_ANCHOR_PATTERN.sub("", row)
         rules.append(row.lstrip(".*").rstrip("/^*"))
     return rules
 
 
-def filtrate_rules(rules: list[str]) -> tuple[set[str], list[str]]:
+def split_hostnames(rules: list[str]) -> tuple[set[str], list[str]]:
     hostnames = set()
     unhandled = []
     for rule in rules:
@@ -76,15 +88,9 @@ def filtrate_rules(rules: list[str]) -> tuple[set[str], list[str]]:
             unhandled.append(rule)
     return hostnames, unhandled
 
-def print_unhandled_lines(lines: list[str]) -> None:
-    if not lines:
-        return
-    print("unhandled rules:\n--------")
-    print("\n".join(lines))
-    print("--------\n")
 
 def handle_auto_proxy(content: str, proxy_type: str, excludes: set[str]) -> str:
-    hostnames, unhandled = filtrate_rules(clear_format(content))
+    hostnames, unhandled = split_hostnames(normalize_auto_proxy_rules(content))
     print_unhandled_lines(unhandled)
     lines = [format_rule(h, proxy_type) for h in hostnames if h not in excludes]
     return "\n".join(sorted(lines))
@@ -93,14 +99,13 @@ def handle_auto_proxy(content: str, proxy_type: str, excludes: set[str]) -> str:
 def handle_domains(content: str, proxy_type: str, excludes: set[str]) -> str:
     seen = set()
     lines = []
-    for domain in content.splitlines():
-        if domain.strip() == "":
+    for line in content.splitlines():
+        if not line.strip():
             continue
-        if domain.startswith("#"):
-            lines.append(domain)
+        if line.startswith("#"):
+            lines.append(line)
             continue
-        if domain.count(".") > 1:
-            domain = domain.strip(".")
+        domain = line.strip(".") if line.count(".") > 1 else line
         if domain in excludes or domain in seen:
             continue
         seen.add(domain)
@@ -112,15 +117,12 @@ def handle_surge(content: str, proxy_type: str, excludes: set[str]) -> str:
     lines = []
     unhandled = []
     for line in content.splitlines():
-        if line.strip() == "":
+        if not line.strip():
             continue
         if line.startswith("#"):
             lines.append(line)
             continue
-        if line.startswith("ip-cidr:"):
-            line = "IP-CIDR," + line.removeprefix("ip-cidr:")
-        if line.startswith("IP-CIDR:"):
-            line = "IP-CIDR," + line.removeprefix("IP-CIDR:")
+        line = IP_CIDR_COLON_PATTERN.sub("IP-CIDR,", line)
         parts = line.split(",")
         if len(parts) < 2:
             unhandled.append(line)
@@ -141,39 +143,61 @@ FORMAT_HANDLERS = {
 }
 
 
-def update_rule_file(filename: str) -> None:
-    """Regenerate a rule file from the source declared in its header:
+@dataclass
+class RuleSource:
+    """Source declared in a rule file header:
 
     #web <format> <proxy|direct> [raw|base64]
     #<url>
     #ignore <domain>[,<domain>...]   (optional, repeatable)
     """
-    lines = read_file(filename).splitlines()
+
+    fmt: str
+    proxy_type: str
+    encoding: str
+    url: str
+    header: list[str]
+    excludes: set[str] = field(default_factory=set)
+
+
+def parse_rule_source(lines: list[str]) -> RuleSource | None:
     if len(lines) < 2:
-        return
+        return None
     parts = lines[0].lstrip("#").split()
     if len(parts) < 3 or parts[0] != "web":
-        return
+        return None
     fmt, proxy_type = parts[1], parts[2]
-    encoding = parts[3] if len(parts) >= 4 else "raw"
-    url = lines[1].lstrip("#")
-
     if proxy_type not in PROXY_TYPES:
         raise ValueError(f"invalid proxy type: {proxy_type}")
-    handler = FORMAT_HANDLERS.get(fmt)
-    if handler is None:
+    if fmt not in FORMAT_HANDLERS:
         raise ValueError(f"unknown format: {fmt}")
 
-    header = lines[:2]
-    excludes = set()
+    source = RuleSource(
+        fmt=fmt,
+        proxy_type=proxy_type,
+        encoding=parts[3] if len(parts) >= 4 else "raw",
+        url=lines[1].lstrip("#"),
+        header=lines[:2],
+    )
     for line in lines[2:]:
         if not line.startswith("#ignore"):
             break
-        header.append(line)
-        excludes.update(d.strip() for d in line.removeprefix("#ignore").split(","))
+        source.header.append(line)
+        source.excludes.update(d.strip() for d in line.removeprefix("#ignore").split(","))
+    return source
 
-    content = handler(get_web_rule(url, encoding), proxy_type.upper(), excludes)
-    write_file(filename, "\n".join(header) + "\n\n" + content + "\n")
+
+def update_rule_file(filename: str) -> None:
+    source = parse_rule_source(read_file(filename).splitlines())
+    if source is None:
+        return
+    handler = FORMAT_HANDLERS[source.fmt]
+    content = handler(
+        get_web_rule(source.url, source.encoding),
+        source.proxy_type.upper(),
+        source.excludes,
+    )
+    write_file(filename, "\n".join(source.header) + "\n\n" + content + "\n")
 
 
 def update_all_rule_files() -> None:
