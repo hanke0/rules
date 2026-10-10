@@ -4,6 +4,7 @@ import re
 import time
 import urllib.request
 from dataclasses import dataclass, field
+from datetime import datetime, timedelta, timezone
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
@@ -236,12 +237,19 @@ def update_all_rule_files() -> None:
         print(f"update rule finish: {filename}")
 
 
+tz_utc_plus_8 = timezone(timedelta(hours=8))
+
+
+def get_update_at() -> str:
+    return datetime.now(tz_utc_plus_8).strftime("%Y-%m-%d %H:%M:%S")
+
+
 def update_shadowrocket_config():
     tpl = read_file("shadowrocket.tpl")
     rules = []
     for file in RULE_FILES:
         rules.append(read_file(file))
-    timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
+    timestamp = get_update_at()
     content = tpl.format(rules="\n".join(rules), update_at=timestamp)
     write_file("shadowrocket.conf", content)
 
@@ -281,13 +289,9 @@ def update_clash_config():
         proxy_rules.append(proxy)
         direct_rules.append(direct)
 
-    timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
-    write_file(
-        "clash_direct.yaml", tpl.format(rules="\n".join(direct_rules), update_at=timestamp)
-    )
-    write_file(
-        "clash_proxy.yaml", tpl.format(rules="\n".join(proxy_rules), update_at=timestamp)
-    )
+    timestamp = get_update_at()
+    write_file("clash_direct.yaml", tpl.format(rules="\n".join(direct_rules), update_at=timestamp))
+    write_file("clash_proxy.yaml", tpl.format(rules="\n".join(proxy_rules), update_at=timestamp))
 
 
 def main() -> None:
