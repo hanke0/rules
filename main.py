@@ -157,13 +157,14 @@ class RuleSource:
     proxy_type: str
     encoding: str
     url: str
+    skip: int
+    excludes: set[str] = field(default_factory=set)
 
 
 @dataclass
 class RuleSources:
     sources: list[RuleSource]
     header: list[str]
-    excludes: set[str] = field(default_factory=set)
 
 
 def parse_rule_source(lines: list[str]) -> RuleSource | None:
@@ -177,6 +178,14 @@ def parse_rule_source(lines: list[str]) -> RuleSource | None:
         raise ValueError(f"invalid proxy type: {proxy_type}")
     if fmt not in FORMAT_HANDLERS:
         raise ValueError(f"unknown format: {fmt}")
+    skip = 2
+    excludes = set()
+    for line in lines:
+        line = COMMENT_PREFIX_PATTERN.sub(line, "")
+        if not line.startswith("ignore "):
+            break
+        excludes.update(d.strip() for d in line.removeprefix("ignore ").split(","))
+        skip += 1
 
     source = RuleSource(
         name=name,
@@ -184,6 +193,8 @@ def parse_rule_source(lines: list[str]) -> RuleSource | None:
         proxy_type=proxy_type,
         encoding=parts[4] if len(parts) >= 5 else "raw",
         url=COMMENT_PREFIX_PATTERN.sub("", lines[1]),
+        skip=skip,
+        excludes=excludes,
     )
     return source
 
@@ -192,7 +203,6 @@ def parse_rule_sources(lines: list[str]) -> RuleSources | None:
     sources = RuleSources(
         sources=[],
         header=[],
-        excludes=set(),
     )
     temp = lines
     while True:
@@ -200,14 +210,8 @@ def parse_rule_sources(lines: list[str]) -> RuleSources | None:
         if source is None:
             break
         sources.sources.append(source)
-        sources.header.extend(temp[:2])
-        temp = temp[2:]
-    for line in temp:
-        line = COMMENT_PREFIX_PATTERN.sub(line, "")
-        if not line.startswith("ignore "):
-            break
-        sources.header.append(line)
-        sources.excludes.update(d.strip() for d in line.removeprefix("ignore ").split(","))
+        sources.header.extend(temp[:source.skip])
+        temp = temp[source.skip:]
     return sources
 
 
@@ -223,7 +227,7 @@ def update_rule_file(filename: str) -> None:
         content = handler(
             get_web_rule(source.url, source.encoding),
             source.proxy_type.upper(),
-            sources.excludes,
+            source.excludes,
         )
         contents.append(content)
         print(f"handle rule-set finish: {source.name}")
