@@ -1,4 +1,4 @@
-# Last Modified: 2026-10-10 15:50:54
+# Last Modified: 2026-10-10 16:11:26
 
 # Usage: add bellow content in your clash.yaml
 #rule-providers:
@@ -29,10 +29,10 @@ payload:
   - DOMAIN-SUFFIX,m-team.co
   - DOMAIN-SUFFIX,cursor.com
   - DOMAIN-SUFFIX,cursor.so
-  - IP-CIDR,74.125.0.0/16
-  - IP-CIDR,74.125.23.127/32
-  - IP-CIDR,18.194.0.0/15
-  - IP-CIDR,34.224.0.0/12
+  - IP-CIDR,74.125.0.0/16,no-resolve
+  - IP-CIDR,74.125.23.127/32,no-resolve
+  - IP-CIDR,18.194.0.0/15,no-resolve
+  - IP-CIDR,34.224.0.0/12,no-resolve
   - DOMAIN-SUFFIX,000webhost.com
   - DOMAIN-SUFFIX,0rz.tw
   - DOMAIN-SUFFIX,1-apple.com.tw
