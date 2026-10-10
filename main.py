@@ -12,22 +12,20 @@ REQUEST_TIMEOUT = 30
 
 RULE_FILES = (
     "ai.list",
-    "cn.list",
     "gfw.list",
     "hk-broker.list",
     "linkedin.list",
     "telegram.list",
+    "cn.list",
 )
-TEMPLATE_FILE = "base.tpl"
-OUTPUT_FILE = "shadowrocket.conf"
 
 PROXY_TYPES = ("proxy", "direct")
+RULE_TYPES = ("DOMAIN-SUFFIX", "DOMAIN", "DOMAIN-KEYWORD", "IP-CIDR", "IP-ASN")
 AUTO_PROXY_SKIP_PREFIXES = ("!", "@@", "[AutoProxy")
 URL_SCHEME_PATTERN = re.compile(r"^\|?https?://")
 DOMAIN_ANCHOR_PATTERN = re.compile(r"^\|\|")
 IP_CIDR_COLON_PATTERN = re.compile(r"^ip-cidr:", re.IGNORECASE)
 HOSTNAME_PATTERN = re.compile(r"^[\w.-]+$")
-INCLUDE_PATTERN = re.compile(r"^#include (.+)$")
 
 
 def read_file(filename: str) -> str:
@@ -130,6 +128,9 @@ def handle_surge(content: str, proxy_type: str, excludes: set[str]) -> str:
         rule_type, domain, *options = parts
         if domain in excludes:
             continue
+        if rule_type not in RULE_TYPES:
+            unhandled.append(line)
+            continue
         suffix = f",{options[0]}" if options else ""
         lines.append(f"{rule_type},{domain},{proxy_type}{suffix}")
     print_unhandled_lines(unhandled)
@@ -207,23 +208,60 @@ def update_all_rule_files() -> None:
         print(f"update rule finish: {filename}")
 
 
-def expand_includes(content: str) -> str:
-    lines = []
-    for line in content.splitlines():
-        match = INCLUDE_PATTERN.match(line)
-        if match:
-            lines.append(read_file(match.group(1)))
-            lines.append("\n")
+def update_shadowrocket_config():
+    tpl = read_file("shadowrocket.tpl")
+    rules = []
+    for file in RULE_FILES:
+        rules.append(read_file(file))
+    timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
+    content = tpl.format(rules="\n".join(rules).lstrip(), update_at=timestamp)
+    write_file("shadowrocket.conf", content)
+
+
+def convert_to_clash_rule_set(rule: str) -> tuple[str, str]:
+    proxy_rules = []
+    direct_rules = []
+    unhandled_rules = []
+    for line in rule.splitlines():
+        line = line.strip()
+        if line == "" or line.startswith("#"):
+            continue
+        parts = line.split(",")
+        if len(parts) < 3:
+            unhandled_rules.append(line)
+            continue
+        rule_type, domain, proxy_type, *options = parts
+        option = f",{options[0]}" if options else ""
+        clash_rule_line = f"  - {rule_type},{domain}{option}"
+        if proxy_type == "DIRECT":
+            direct_rules.append(clash_rule_line)
+        elif proxy_type == "PROXY":
+            proxy_rules.append(clash_rule_line)
         else:
-            lines.append(line)
-    return "\n".join(lines)
+            unhandled_rules.append(line)
+            continue
+    print_unhandled_lines(unhandled_rules)
+    return ("\n".join(proxy_rules), "\n".join(direct_rules))
+
+
+def update_clash_config():
+    tpl = read_file("clash.tpl")
+    direct_rules: list[str] = []
+    proxy_rules: list[str] = []
+    for file in RULE_FILES:
+        proxy, direct = convert_to_clash_rule_set(read_file(file))
+        proxy_rules.append(proxy)
+        direct_rules.append(direct)
+
+    timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
+    write_file("clash_direct.yaml", tpl.format(rules="\n".join(direct_rules).lstrip(), update_at=timestamp))
+    write_file("clash_proxy.yaml", tpl.format(rules="\n".join(proxy_rules).lstrip(), update_at=timestamp))
 
 
 def main() -> None:
     update_all_rule_files()
-    content = expand_includes(read_file(TEMPLATE_FILE))
-    timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
-    write_file(OUTPUT_FILE, f"# update at {timestamp}\n\n{content}")
+    update_shadowrocket_config()
+    update_clash_config()
     print("Done!")
 
 

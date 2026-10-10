@@ -1,3 +1,5 @@
+# update at {update_at}
+
 [General]
 ipv6 = false
 bypass-system = true
@@ -6,16 +8,7 @@ bypass-tun = 10.0.0.0/8,100.64.0.0/10,127.0.0.0/8,169.254.0.0/16,172.16.0.0/12,1
 dns-server = https://dns.alidns.com/dns-query, https://doh.pub/dns-query
 
 [Rule]
-
-# Proxy
-#include gfw.list
-#include hk-broker.list
-#include telegram.list
-#include linkedin.list
-#include ai.list
-
-# Direct
-#include cn.list
+{rules}
 
 GEOIP,CN,DIRECT
 FINAL,proxy
