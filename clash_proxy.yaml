@@ -1,4 +1,4 @@
-# Last Modified: 2026-10-15 09:13:19
+# Last Modified: 2026-10-16 09:00:26
 
 # Usage: add bellow content in your clash.yaml
 #rule-providers:
@@ -4697,6 +4697,9 @@ payload:
   - DOMAIN-SUFFIX,byteintlapi.com
   - DOMAIN-SUFFIX,byteoversea.com
   - DOMAIN-SUFFIX,capcut.com
+  - DOMAIN-SUFFIX,capcutapi.com
+  - DOMAIN-SUFFIX,capcutapi.us
+  - DOMAIN-SUFFIX,capcutstatic.com
   - DOMAIN-SUFFIX,ibytedtos.com
   - DOMAIN-SUFFIX,ibyteimg.com
   - DOMAIN-SUFFIX,ipstatp.com
