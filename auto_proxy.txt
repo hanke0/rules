@@ -1,5 +1,5 @@
 [AutoProxy 0.2.9]
-! Last Modified: 2026-10-16 09:00:26
+! Last Modified: 2026-10-17 09:05:03
 
 ||x.ai
 ||z-lib.gs
@@ -68,6 +68,7 @@
 ||6parker.com
 ||6parknews.com
 ||7capture.com
+||7x24hrs.com
 ||8-d.com
 ||85.17.73.31
 ||85cc.us
@@ -2407,7 +2408,9 @@
 ||meripet.com
 ||merit-times.com.tw
 ||messenger.com
+||meta.ai
 ||meta.com
+||metaaivm.com
 ||metafilter.com
 ||metamask.io
 ||metart.com

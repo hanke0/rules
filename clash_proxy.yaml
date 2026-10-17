@@ -1,4 +1,4 @@
-# Last Modified: 2026-10-16 09:00:26
+# Last Modified: 2026-10-17 09:05:03
 
 # Usage: add bellow content in your clash.yaml
 #rule-providers:
@@ -93,6 +93,7 @@ payload:
   - DOMAIN-SUFFIX,6parker.com
   - DOMAIN-SUFFIX,6parknews.com
   - DOMAIN-SUFFIX,7capture.com
+  - DOMAIN-SUFFIX,7x24hrs.com
   - DOMAIN-SUFFIX,8-d.com
   - DOMAIN-SUFFIX,85.17.73.31
   - DOMAIN-SUFFIX,85cc.us
@@ -2432,7 +2433,9 @@ payload:
   - DOMAIN-SUFFIX,meripet.com
   - DOMAIN-SUFFIX,merit-times.com.tw
   - DOMAIN-SUFFIX,messenger.com
+  - DOMAIN-SUFFIX,meta.ai
   - DOMAIN-SUFFIX,meta.com
+  - DOMAIN-SUFFIX,metaaivm.com
   - DOMAIN-SUFFIX,metafilter.com
   - DOMAIN-SUFFIX,metamask.io
   - DOMAIN-SUFFIX,metart.com
