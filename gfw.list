@@ -256,6 +256,7 @@ DOMAIN-SUFFIX,api.pureapk.com,PROXY
 DOMAIN-SUFFIX,api.recaptcha.net,PROXY
 DOMAIN-SUFFIX,api.shuaiapi.com,PROXY
 DOMAIN-SUFFIX,api.steampowered.com,PROXY
+DOMAIN-SUFFIX,api.themoviedb.org,PROXY
 DOMAIN-SUFFIX,apiary.io,PROXY
 DOMAIN-SUFFIX,apigee.com,PROXY
 DOMAIN-SUFFIX,apk.support,PROXY
@@ -3702,6 +3703,7 @@ DOMAIN-SUFFIX,torlock.com,PROXY
 DOMAIN-SUFFIX,torproject.org,PROXY
 DOMAIN-SUFFIX,torrentgalaxy.to,PROXY
 DOMAIN-SUFFIX,torrentkitty.tv,PROXY
+DOMAIN-SUFFIX,torrentleech.org,PROXY
 DOMAIN-SUFFIX,torrentprivacy.com,PROXY
 DOMAIN-SUFFIX,torrentproject.se,PROXY
 DOMAIN-SUFFIX,torrenty.org,PROXY
@@ -4329,6 +4331,7 @@ DOMAIN-SUFFIX,youtubeeducation.com,PROXY
 DOMAIN-SUFFIX,youtubegaming.com,PROXY
 DOMAIN-SUFFIX,youtubekids.com,PROXY
 DOMAIN-SUFFIX,youversion.com,PROXY
+DOMAIN-SUFFIX,youversionapi.com,PROXY
 DOMAIN-SUFFIX,youwin.com,PROXY
 DOMAIN-SUFFIX,youxu.info,PROXY
 DOMAIN-SUFFIX,yt.be,PROXY

@@ -1,5 +1,5 @@
 [AutoProxy 0.2.9]
-! Last Modified: 2026-10-31 10:01:53
+! Last Modified: 2026-11-01 09:53:09
 
 ||x.ai
 ||z-lib.gs
@@ -238,6 +238,7 @@
 ||api.recaptcha.net
 ||api.shuaiapi.com
 ||api.steampowered.com
+||api.themoviedb.org
 ||apiary.io
 ||apigee.com
 ||apk.support
@@ -3684,6 +3685,7 @@
 ||torproject.org
 ||torrentgalaxy.to
 ||torrentkitty.tv
+||torrentleech.org
 ||torrentprivacy.com
 ||torrentproject.se
 ||torrenty.org
@@ -4311,6 +4313,7 @@
 ||youtubegaming.com
 ||youtubekids.com
 ||youversion.com
+||youversionapi.com
 ||youwin.com
 ||youxu.info
 ||yt.be
