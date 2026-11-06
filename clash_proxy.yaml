@@ -1,4 +1,4 @@
-# Last Modified: 2026-11-05 11:12:20
+# Last Modified: 2026-11-06 11:12:35
 
 # Usage: add bellow content in your clash.yaml
 #rule-providers:
@@ -2408,7 +2408,6 @@ payload:
   - DOMAIN-SUFFIX,matters.town
   - DOMAIN-SUFFIX,matthewdgreen.wordpress.com
   - DOMAIN-SUFFIX,mattwilcox.net
-  - DOMAIN-SUFFIX,maven.neoforged.net
   - DOMAIN-SUFFIX,mcadforums.com
   - DOMAIN-SUFFIX,mcaf.ee
   - DOMAIN-SUFFIX,mceindex.com
@@ -2617,6 +2616,7 @@ payload:
   - DOMAIN-SUFFIX,nekoslovakia.net
   - DOMAIN-SUFFIX,neo-miracle.com
   - DOMAIN-SUFFIX,neodb.social
+  - DOMAIN-SUFFIX,neoforged.net
   - DOMAIN-SUFFIX,neowin.net
   - DOMAIN-SUFFIX,nephobox.com
   - DOMAIN-SUFFIX,netalert.me
