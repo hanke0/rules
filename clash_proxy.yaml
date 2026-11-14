@@ -1,4 +1,4 @@
-# Last Modified: 2026-11-13 11:09:29
+# Last Modified: 2026-11-14 10:54:53
 
 # Usage: add bellow content in your clash.yaml
 #rule-providers:
@@ -81,6 +81,7 @@ payload:
   - DOMAIN-SUFFIX,51.ca
   - DOMAIN-SUFFIX,51jav.org
   - DOMAIN-SUFFIX,51luoben.com
+  - DOMAIN-SUFFIX,51papaya.com
   - DOMAIN-SUFFIX,5278.cc
   - DOMAIN-SUFFIX,611study.com
   - DOMAIN-SUFFIX,611study.icu

@@ -1,5 +1,5 @@
 [AutoProxy 0.2.9]
-! Last Modified: 2026-11-13 11:09:29
+! Last Modified: 2026-11-14 10:54:53
 
 ||x.ai
 ||z-lib.gs
@@ -56,6 +56,7 @@
 ||51.ca
 ||51jav.org
 ||51luoben.com
+||51papaya.com
 ||5278.cc
 ||611study.com
 ||611study.icu
