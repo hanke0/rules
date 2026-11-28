@@ -1,5 +1,5 @@
 [AutoProxy 0.2.9]
-! Last Modified: 2026-11-27 12:48:12
+! Last Modified: 2026-11-28 12:32:57
 
 ||x.ai
 ||z-lib.gs
@@ -144,6 +144,7 @@
 ||agro.hk
 ||ai.dev
 ||ai.studio
+||aicu.cc
 ||aidc.com.tw
 ||aihub.top
 ||aiosearch.com
@@ -906,6 +907,7 @@
 ||daliulian.org
 ||danbooru.donmai.us
 ||danke4china.net
+||danmakus.com
 ||darmau.co
 ||darpa.mil
 ||darrenliuwei.com
@@ -3362,6 +3364,7 @@
 ||southnews.com.tw
 ||southpark.cc.com
 ||sowers.org.hk
+||spacedesk.net
 ||spaceforce.mil
 ||spaces.hightail.com
 ||spacex.com

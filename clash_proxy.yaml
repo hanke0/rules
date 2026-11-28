@@ -1,4 +1,4 @@
-# Last Modified: 2026-11-27 12:48:12
+# Last Modified: 2026-11-28 12:32:57
 
 # Usage: add bellow content in your clash.yaml
 #rule-providers:
@@ -169,6 +169,7 @@ payload:
   - DOMAIN-SUFFIX,agro.hk
   - DOMAIN-SUFFIX,ai.dev
   - DOMAIN-SUFFIX,ai.studio
+  - DOMAIN-SUFFIX,aicu.cc
   - DOMAIN-SUFFIX,aidc.com.tw
   - DOMAIN-SUFFIX,aihub.top
   - DOMAIN-SUFFIX,aiosearch.com
@@ -931,6 +932,7 @@ payload:
   - DOMAIN-SUFFIX,daliulian.org
   - DOMAIN-SUFFIX,danbooru.donmai.us
   - DOMAIN-SUFFIX,danke4china.net
+  - DOMAIN-SUFFIX,danmakus.com
   - DOMAIN-SUFFIX,darmau.co
   - DOMAIN-SUFFIX,darpa.mil
   - DOMAIN-SUFFIX,darrenliuwei.com
@@ -3387,6 +3389,7 @@ payload:
   - DOMAIN-SUFFIX,southnews.com.tw
   - DOMAIN-SUFFIX,southpark.cc.com
   - DOMAIN-SUFFIX,sowers.org.hk
+  - DOMAIN-SUFFIX,spacedesk.net
   - DOMAIN-SUFFIX,spaceforce.mil
   - DOMAIN-SUFFIX,spaces.hightail.com
   - DOMAIN-SUFFIX,spacex.com
